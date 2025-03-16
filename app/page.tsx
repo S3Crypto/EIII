@@ -9,7 +9,7 @@ export default function Home() {
           <div className="w-24 h-24 rounded-full border-2 border-black flex items-center justify-center">
             <h1 className="text-3xl font-bold">E3</h1>
           </div>
-          <h2 className="mt-6 text-2xl font-semibold">Welcome to E3 Profiles</h2>
+          <h2 className="mt-6 text-2xl font-semibold">Welcome to E3</h2>
         </div>
 
         <div className="space-y-4">
