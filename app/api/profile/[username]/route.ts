@@ -9,37 +9,32 @@ export const maxDuration = 60
 
 export async function GET(request: NextRequest, { params }: { params: { username: string } }) {
   const startTime = Date.now()
-  console.log("API route started at:", new Date().toISOString())
+  console.log("API route started at:", new Date().toISOString(), "for username:", params.username)
 
   try {
     const username = params.username
-    console.log("API route: Fetching profile for username:", username)
 
     if (!username) {
+      console.log("API route: No username provided")
       return NextResponse.json({ error: "Username is required" }, { status: 400 })
     }
 
-    // First try the server-db function with a timeout
+    // First try the server-db function
     let profile: UserProfile | null = null
+    let serverDbError: Error | null = null
 
     try {
-      // Set a timeout for the server-db function
-      const timeoutPromise = new Promise<null>((_, reject) => {
-        setTimeout(() => {
-          reject(new Error("Server DB query timed out"))
-        }, 5000) // 5 second timeout
-      })
-
-      // Race the server-db function against the timeout
-      profile = (await Promise.race([getUserProfileByUsernameServer(username), timeoutPromise])) as UserProfile | null
-    } catch (serverDbError) {
-      console.error("API route: Server DB query failed or timed out:", serverDbError)
-      // Continue to fallback
+      console.log("API route: Attempting server-db query for:", username)
+      profile = await getUserProfileByUsernameServer(username)
+      console.log("API route: Server-db query result:", profile ? "Profile found" : "No profile found")
+    } catch (error) {
+      serverDbError = error as Error
+      console.error("API route: Server-db query failed:", serverDbError.message)
     }
 
-    // If that fails, try direct client SDK access as a fallback
+    // If server-db failed or returned no profile, try direct Firestore query
     if (!profile) {
-      console.log("API route: Falling back to direct Firestore query")
+      console.log("API route: Attempting direct Firestore query for:", username)
       try {
         const usersRef = collection(db, "users")
         const q = query(usersRef, where("username", "==", username))
@@ -47,20 +42,27 @@ export async function GET(request: NextRequest, { params }: { params: { username
 
         if (!querySnapshot.empty) {
           profile = querySnapshot.docs[0].data() as UserProfile
-          console.log("API route: Found profile via direct query")
+          console.log("API route: Direct query found profile for:", username)
+        } else {
+          console.log("API route: Direct query found no profile for:", username)
         }
       } catch (directError) {
-        console.error("API route: Error in direct query:", directError)
+        console.error("API route: Direct Firestore query failed:", directError)
+        // If both queries failed, return the server-db error
+        if (serverDbError) {
+          throw serverDbError
+        }
+        throw directError
       }
     }
 
     if (!profile) {
-      console.log("API route: Profile not found")
+      console.log("API route: No profile found for username:", username)
       return NextResponse.json({ error: "Profile not found" }, { status: 404 })
     }
 
     const endTime = Date.now()
-    console.log(`API route completed in ${endTime - startTime}ms`)
+    console.log(`API route completed in ${endTime - startTime}ms for username: ${username}`)
 
     return NextResponse.json(profile)
   } catch (error) {
@@ -68,4 +70,3 @@ export async function GET(request: NextRequest, { params }: { params: { username
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
-
