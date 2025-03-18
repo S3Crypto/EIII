@@ -2,10 +2,24 @@
 
 import { useTheme } from "next-themes"
 import Image from "next/image"
+import { useState, useEffect } from "react"
 
 export default function E3Logo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const { theme } = useTheme()
   const isDark = theme === "e3-dark"
+  const [imageError, setImageError] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const sizes = {
+    sm: { width: 48, height: 48 },
+    md: { width: 96, height: 96 },
+    lg: { width: 128, height: 128 },
+  }
 
   const sizeClasses = {
     sm: "w-12 h-12",
@@ -13,29 +27,26 @@ export default function E3Logo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
     lg: "w-32 h-32",
   }
 
-  // Fallback to the original component behavior if the theme system isn't working
-  if (typeof theme === "undefined") {
+  // Text fallback if image fails to load or during SSR
+  if (imageError || !mounted) {
     return (
-      <div className={`${sizeClasses[size]} rounded-full border-2 border-black flex items-center justify-center`}>
-        <span className={`font-bold ${size === "sm" ? "text-lg" : size === "md" ? "text-3xl" : "text-4xl"}`}>E3</span>
+      <div className={`${sizeClasses[size]} rounded-full border-2 ${isDark ? 'border-off-white' : 'border-off-black'} flex items-center justify-center`}>
+        <span className={`font-bold ${isDark ? 'text-off-white' : 'text-off-black'} ${size === "sm" ? "text-lg" : size === "md" ? "text-3xl" : "text-4xl"}`}>E3</span>
       </div>
-    )
+    );
   }
 
   // Using the theme-appropriate logo
   return (
-    <div className={`${sizeClasses[size]} flex items-center justify-center`}>
-      {isDark ? (
-        // White logo for dark theme (off-black background)
-        <div className={`${sizeClasses[size]} rounded-full border-2 border-off-white flex items-center justify-center`}>
-          <span className={`font-bold text-off-white ${size === "sm" ? "text-lg" : size === "md" ? "text-3xl" : "text-4xl"}`}>E3</span>
-        </div>
-      ) : (
-        // Black logo for light theme (off-white background)
-        <div className={`${sizeClasses[size]} rounded-full border-2 border-off-black flex items-center justify-center`}>
-          <span className={`font-bold text-off-black ${size === "sm" ? "text-lg" : size === "md" ? "text-3xl" : "text-4xl"}`}>E3</span>
-        </div>
-      )}
+    <div className="flex items-center justify-center">
+      <Image
+        src={isDark ? "/e3-logo-white.svg" : "/e3-logo-black.svg"}
+        alt="E3 Logo"
+        width={sizes[size].width}
+        height={sizes[size].height}
+        priority
+        onError={() => setImageError(true)}
+      />
     </div>
   )
 }
