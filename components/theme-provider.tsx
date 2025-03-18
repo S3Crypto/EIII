@@ -6,6 +6,7 @@ import {
   type ThemeProviderProps,
 } from 'next-themes'
 
+// Custom ThemeProvider that doesn't affect auth pages
 export function ThemeProvider({
   children,
   ...props

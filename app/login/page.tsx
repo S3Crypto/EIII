@@ -5,14 +5,13 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/hooks/use-auth"
-import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import E3Logo from "@/components/e3-logo"
+import Image from "next/image"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -21,8 +20,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const { signIn } = useAuth()
   const router = useRouter()
-  const { theme } = useTheme()
-  const isDark = theme === "e3-dark"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,13 +37,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className={`flex items-center justify-center min-h-screen p-4 ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
-      <Card className={`w-full max-w-md ${isDark ? 'bg-off-black border-off-white/20' : 'bg-off-white border-off-black/20'}`}>
+    <div className="flex items-center justify-center min-h-screen p-4 bg-off-white text-off-black">
+      <Card className="w-full max-w-md bg-off-white border-off-black/20">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
-            <E3Logo size="sm" />
+            <Image
+              src="/e3-logo-black.svg"
+              alt="E3 Logo"
+              width={48}
+              height={48}
+              priority
+            />
           </div>
-          <CardTitle className={`text-2xl text-center ${isDark ? 'text-off-white' : 'text-off-black'}`}>Login</CardTitle>
+          <CardTitle className="text-2xl text-center text-off-black">Login</CardTitle>
           <CardDescription className="text-center">
             Enter your email and password to access your account
           </CardDescription>
@@ -60,7 +63,7 @@ export default function LoginPage() {
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className={isDark ? 'text-off-white' : 'text-off-black'}>Email</Label>
+              <Label htmlFor="email" className="text-off-black">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -68,15 +71,15 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className={isDark ? 'border-off-white/30 bg-off-black/50' : 'border-off-black/30 bg-off-white/50'}
+                className="border-off-black/30 bg-off-white/50"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className={isDark ? 'text-off-white' : 'text-off-black'}>Password</Label>
+                <Label htmlFor="password" className="text-off-black">Password</Label>
                 <Link
                   href="/reset-password"
-                  className={`text-sm underline-offset-4 hover:underline ${isDark ? 'text-off-white/70' : 'text-off-black/70'}`}
+                  className="text-sm underline-offset-4 hover:underline text-off-black/70"
                 >
                   Forgot password?
                 </Link>
@@ -87,14 +90,12 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className={isDark ? 'border-off-white/30 bg-off-black/50' : 'border-off-black/30 bg-off-white/50'}
+                className="border-off-black/30 bg-off-white/50"
               />
             </div>
             <Button
               type="submit"
-              className={`w-full ${isDark ?
-                'bg-off-white text-off-black hover:bg-off-white/90' :
-                'bg-off-black text-off-white hover:bg-off-black/90'}`}
+              className="w-full bg-off-black text-off-white hover:bg-off-black/90"
               disabled={isLoading}
             >
               {isLoading ? "Logging in..." : "Login"}
@@ -102,11 +103,11 @@ export default function LoginPage() {
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <p className={`text-sm ${isDark ? 'text-off-white/70' : 'text-off-black/70'}`}>
+          <p className="text-sm text-off-black/70">
             Don&apos;t have an account?{" "}
             <Link
               href="/signup"
-              className={`underline-offset-4 hover:underline ${isDark ? 'text-off-white' : 'text-off-black'}`}
+              className="underline-offset-4 hover:underline text-off-black"
             >
               Sign up
             </Link>
