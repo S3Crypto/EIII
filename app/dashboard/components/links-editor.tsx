@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { v4 as uuidv4 } from "uuid"
+import { useTheme } from "next-themes"
 import type { UserProfile, ProfileLink } from "@/lib/types"
 import { updateProfileLink, deleteProfileLink } from "@/lib/db"
 import { useAuth } from "@/lib/hooks/use-auth"
@@ -35,6 +36,8 @@ export default function LinksEditor({ profile, setProfile }: LinksEditorProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { user } = useAuth()
   const { toast } = useToast()
+  const { theme } = useTheme()
+  const isDark = theme === "e3-dark"
 
   const addLink = () => {
     const newLink: ProfileLink = {
@@ -123,56 +126,108 @@ export default function LinksEditor({ profile, setProfile }: LinksEditorProps) {
   }
 
   return (
-    <Card>
+    <Card className={`${isDark ? 'bg-off-black border-off-white/20' : 'bg-off-white border-off-black/20'}`}>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Social Links</CardTitle>
-          <CardDescription>Add links to your social profiles or other websites</CardDescription>
+          <CardTitle className={isDark ? 'text-off-white' : 'text-off-black'}>Social Links</CardTitle>
+          <CardDescription className={isDark ? 'text-off-white/70' : 'text-off-black/70'}>
+            Add links to your social profiles or other websites
+          </CardDescription>
         </div>
-        <Button onClick={addLink} size="sm">
+        <Button
+          onClick={addLink}
+          size="sm"
+          className={isDark ?
+            'bg-off-white text-off-black hover:bg-off-white/90' :
+            'bg-off-black text-off-white hover:bg-off-black/90'
+          }
+        >
           <Plus className="h-4 w-4 mr-2" />
           Add Link
         </Button>
       </CardHeader>
       <CardContent>
         {links.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className={`text-center py-8 ${isDark ? 'text-off-white/50' : 'text-off-black/50'}`}>
             <p>No links added yet. Click &quot;Add Link&quot; to get started.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {links.map((link, index) => (
-              <div key={link.id} className="flex items-start space-x-4 p-4 border rounded-md">
+              <div
+                key={link.id}
+                className={`flex items-start space-x-4 p-4 border rounded-md ${isDark ? 'border-off-white/20' : 'border-off-black/20'
+                  }`}
+              >
                 <div className="flex-1 space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`link-title-${index}`}>Title</Label>
+                    <Label
+                      htmlFor={`link-title-${index}`}
+                      className={isDark ? 'text-off-white' : 'text-off-black'}
+                    >
+                      Title
+                    </Label>
                     <Input
                       id={`link-title-${index}`}
                       value={link.title}
                       onChange={(e) => updateLink(index, "title", e.target.value)}
                       placeholder="Link Title"
+                      className={isDark ?
+                        'bg-off-black border-off-white/30 text-off-white' :
+                        'bg-off-white border-off-black/30 text-off-black'
+                      }
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor={`link-url-${index}`}>URL</Label>
+                    <Label
+                      htmlFor={`link-url-${index}`}
+                      className={isDark ? 'text-off-white' : 'text-off-black'}
+                    >
+                      URL
+                    </Label>
                     <Input
                       id={`link-url-${index}`}
                       value={link.url}
                       onChange={(e) => updateLink(index, "url", e.target.value)}
                       placeholder="https://example.com"
+                      className={isDark ?
+                        'bg-off-black border-off-white/30 text-off-white' :
+                        'bg-off-white border-off-black/30 text-off-black'
+                      }
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor={`link-icon-${index}`}>Icon</Label>
-                    <Select value={link.icon} onValueChange={(value) => updateLink(index, "icon", value)}>
-                      <SelectTrigger id={`link-icon-${index}`}>
+                    <Label
+                      htmlFor={`link-icon-${index}`}
+                      className={isDark ? 'text-off-white' : 'text-off-black'}
+                    >
+                      Icon
+                    </Label>
+                    <Select
+                      value={link.icon}
+                      onValueChange={(value) => updateLink(index, "icon", value)}
+                    >
+                      <SelectTrigger
+                        id={`link-icon-${index}`}
+                        className={isDark ?
+                          'bg-off-black border-off-white/30 text-off-white' :
+                          'bg-off-white border-off-black/30 text-off-black'
+                        }
+                      >
                         <SelectValue placeholder="Select an icon" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className={isDark ?
+                        'bg-off-black border-off-white/30 text-off-white' :
+                        'bg-off-white border-off-black/30 text-off-black'
+                      }>
                         {iconOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                            className={isDark ? 'focus:bg-off-white/10 text-off-white' : 'focus:bg-off-black/10 text-off-black'}
+                          >
                             <div className="flex items-center">
                               {option.icon}
                               <span className="ml-2">{option.label}</span>
@@ -183,13 +238,27 @@ export default function LinksEditor({ profile, setProfile }: LinksEditorProps) {
                     </Select>
                   </div>
 
-                  <Button onClick={() => saveLink(link)} disabled={isLoading || !link.title || !link.url} size="sm">
+                  <Button
+                    onClick={() => saveLink(link)}
+                    disabled={isLoading || !link.title || !link.url}
+                    size="sm"
+                    className={isDark ?
+                      'bg-off-white text-off-black hover:bg-off-white/90' :
+                      'bg-off-black text-off-white hover:bg-off-black/90'
+                    }
+                  >
                     Save
                   </Button>
                 </div>
 
-                <Button variant="ghost" size="icon" onClick={() => removeLink(index, link.id)} disabled={isLoading}>
-                  <Trash2 className="h-4 w-4 text-destructive" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeLink(index, link.id)}
+                  disabled={isLoading}
+                  className={isDark ? 'hover:bg-off-white/10' : 'hover:bg-off-black/10'}
+                >
+                  <Trash2 className={`h-4 w-4 ${isDark ? 'text-red-400' : 'text-red-600'}`} />
                 </Button>
               </div>
             ))}
@@ -199,4 +268,3 @@ export default function LinksEditor({ profile, setProfile }: LinksEditorProps) {
     </Card>
   )
 }
-

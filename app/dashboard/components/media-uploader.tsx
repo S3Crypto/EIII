@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import type React from "react"
 
 import { useState, useRef } from "react"
+import { useTheme } from "next-themes"
 import type { UserProfile } from "@/lib/types"
 import { uploadMediaFile, updateUserProfile } from "@/lib/db"
 import { useAuth } from "@/lib/hooks/use-auth"
@@ -27,6 +28,8 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { user } = useAuth()
   const { toast } = useToast()
+  const { theme } = useTheme()
+  const isDark = theme === "e3-dark"
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -118,7 +121,7 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
       case "music":
         return (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">Current Audio:</p>
+            <p className={`text-sm font-medium mb-2 ${isDark ? 'text-off-white' : 'text-off-black'}`}>Current Audio:</p>
             <audio controls className="w-full">
               <source src={profile.mediaUrl} type="audio/mpeg" />
               Your browser does not support the audio element.
@@ -128,7 +131,7 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
       case "video":
         return (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">Current Video:</p>
+            <p className={`text-sm font-medium mb-2 ${isDark ? 'text-off-white' : 'text-off-black'}`}>Current Video:</p>
             <video controls className="w-full max-h-48 object-contain">
               <source src={profile.mediaUrl} type="video/mp4" />
               Your browser does not support the video element.
@@ -138,8 +141,8 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
       case "image":
         return (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">Current Image:</p>
-            <div className="relative w-full h-48 bg-gray-100 rounded-md overflow-hidden">
+            <p className={`text-sm font-medium mb-2 ${isDark ? 'text-off-white' : 'text-off-black'}`}>Current Image:</p>
+            <div className={`relative w-full h-48 rounded-md overflow-hidden ${isDark ? 'bg-off-black/50' : 'bg-off-white/50'}`}>
               <img
                 src={profile.mediaUrl || "/placeholder.svg"}
                 alt="Profile media"
@@ -154,17 +157,27 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
   }
 
   return (
-    <Card>
+    <Card className={`${isDark ? 'bg-off-black border-off-white/20' : 'bg-off-white border-off-black/20'}`}>
       <CardHeader>
-        <CardTitle>Media</CardTitle>
-        <CardDescription>Add music, video, or images to your profile</CardDescription>
+        <CardTitle className={isDark ? 'text-off-white' : 'text-off-black'}>Media</CardTitle>
+        <CardDescription className={isDark ? 'text-off-white/70' : 'text-off-black/70'}>
+          Add music, video, or images to your profile
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {profile.mediaUrl && (
           <div className="mb-6">
             {renderMediaPreview()}
 
-            <Button variant="outline" className="mt-4" onClick={handleRemoveMedia} disabled={isLoading}>
+            <Button
+              variant="outline"
+              className={`mt-4 ${isDark ?
+                'border-off-white text-off-white hover:bg-off-white/10' :
+                'border-off-black text-off-black hover:bg-off-black/10'
+                }`}
+              onClick={handleRemoveMedia}
+              disabled={isLoading}
+            >
               <X className="h-4 w-4 mr-2" />
               Remove Media
             </Button>
@@ -173,31 +186,52 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Media Type</Label>
+            <Label className={isDark ? 'text-off-white' : 'text-off-black'}>Media Type</Label>
             <RadioGroup
               value={mediaType}
               onValueChange={(value) => setMediaType(value as "music" | "video" | "image")}
               className="flex space-x-4"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="music" id="music" />
-                <Label htmlFor="music" className="flex items-center">
+                <RadioGroupItem
+                  value="music"
+                  id="music"
+                  className={isDark ? 'border-off-white text-off-white' : 'border-off-black text-off-black'}
+                />
+                <Label
+                  htmlFor="music"
+                  className={`flex items-center ${isDark ? 'text-off-white' : 'text-off-black'}`}
+                >
                   <Music className="h-4 w-4 mr-2" />
                   Music
                 </Label>
               </div>
 
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="video" id="video" />
-                <Label htmlFor="video" className="flex items-center">
+                <RadioGroupItem
+                  value="video"
+                  id="video"
+                  className={isDark ? 'border-off-white text-off-white' : 'border-off-black text-off-black'}
+                />
+                <Label
+                  htmlFor="video"
+                  className={`flex items-center ${isDark ? 'text-off-white' : 'text-off-black'}`}
+                >
                   <Video className="h-4 w-4 mr-2" />
                   Video
                 </Label>
               </div>
 
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="image" id="image" />
-                <Label htmlFor="image" className="flex items-center">
+                <RadioGroupItem
+                  value="image"
+                  id="image"
+                  className={isDark ? 'border-off-white text-off-white' : 'border-off-black text-off-black'}
+                />
+                <Label
+                  htmlFor="image"
+                  className={`flex items-center ${isDark ? 'text-off-white' : 'text-off-black'}`}
+                >
                   <ImageIcon className="h-4 w-4 mr-2" />
                   Image
                 </Label>
@@ -206,7 +240,12 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="media-file">Upload File</Label>
+            <Label
+              htmlFor="media-file"
+              className={isDark ? 'text-off-white' : 'text-off-black'}
+            >
+              Upload File
+            </Label>
             <div className="flex items-center space-x-2">
               <Input
                 id="media-file"
@@ -214,14 +253,24 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 accept={mediaType === "music" ? "audio/*" : mediaType === "video" ? "video/*" : "image/*"}
-                className="flex-1"
+                className={`flex-1 ${isDark ?
+                  'bg-off-black border-off-white/30 text-off-white' :
+                  'bg-off-white border-off-black/30 text-off-black'
+                  }`}
               />
-              <Button onClick={handleUpload} disabled={isLoading || !file}>
+              <Button
+                onClick={handleUpload}
+                disabled={isLoading || !file}
+                className={isDark ?
+                  'bg-off-white text-off-black hover:bg-off-white/90' :
+                  'bg-off-black text-off-white hover:bg-off-black/90'
+                }
+              >
                 <Upload className="h-4 w-4 mr-2" />
                 Upload
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className={`text-xs mt-1 ${isDark ? 'text-off-white/60' : 'text-off-black/60'}`}>
               {mediaType === "music"
                 ? "Supported formats: MP3, WAV, OGG"
                 : mediaType === "video"
@@ -234,4 +283,3 @@ export default function MediaUploader({ profile, setProfile }: MediaUploaderProp
     </Card>
   )
 }
-

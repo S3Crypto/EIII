@@ -100,44 +100,93 @@ export default function ProfileEditor({ profile, setProfile }: ProfileEditorProp
   }
 
   return (
-    <Card>
+    <Card className={`${isDarkMode ? 'bg-off-black border-off-white/20' : 'bg-off-white border-off-black/20'}`}>
       <CardHeader>
-        <CardTitle>Profile Information</CardTitle>
-        <CardDescription>Update your profile information</CardDescription>
+        <CardTitle className={isDarkMode ? 'text-off-white' : 'text-off-black'}>Profile Information</CardTitle>
+        <CardDescription className={isDarkMode ? 'text-off-white/70' : 'text-off-black/70'}>
+          Update your profile information
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="displayName">Display Name</Label>
-            <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+            <Label htmlFor="displayName" className={isDarkMode ? 'text-off-white' : 'text-off-black'}>
+              Display Name
+            </Label>
+            <Input
+              id="displayName"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              required
+              className={isDarkMode ?
+                'bg-off-black border-off-white/30 text-off-white' :
+                'bg-off-white border-off-black/30 text-off-black'
+              }
+            />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-            <p className="text-xs text-muted-foreground">This will be used for your profile URL: e3.com/{username}</p>
+            <Label htmlFor="username" className={isDarkMode ? 'text-off-white' : 'text-off-black'}>
+              Username
+            </Label>
+            <Input
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className={isDarkMode ?
+                'bg-off-black border-off-white/30 text-off-white' :
+                'bg-off-white border-off-black/30 text-off-black'
+              }
+            />
+            <p className={`text-xs ${isDarkMode ? 'text-off-white/60' : 'text-off-black/60'}`}>
+              This will be used for your profile URL: e3.com/{username}
+            </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio (Optional)</Label>
-            <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} />
+            <Label htmlFor="bio" className={isDarkMode ? 'text-off-white' : 'text-off-black'}>
+              Bio (Optional)
+            </Label>
+            <Textarea
+              id="bio"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              rows={4}
+              className={isDarkMode ?
+                'bg-off-black border-off-white/30 text-off-white' :
+                'bg-off-white border-off-black/30 text-off-black'
+              }
+            />
           </div>
 
-          <div className="space-y-2 pt-4 border-t">
+          <div className="space-y-2 pt-4 border-t border-opacity-20">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="theme-toggle">Dark Theme</Label>
-                <p className="text-xs text-muted-foreground">Use dark mode for your public profile</p>
+                <Label htmlFor="theme-toggle" className={isDarkMode ? 'text-off-white' : 'text-off-black'}>
+                  Dark Theme
+                </Label>
+                <p className={`text-xs ${isDarkMode ? 'text-off-white/60' : 'text-off-black/60'}`}>
+                  Use dark mode for your dashboard and public profile
+                </p>
               </div>
               <Switch
                 id="theme-toggle"
                 checked={isDarkMode}
                 onCheckedChange={handleThemeChange}
+                className={isDarkMode ? 'data-[state=checked]:bg-off-white' : ''}
               />
             </div>
           </div>
 
-          <Button type="submit" className="mt-6" disabled={isLoading}>
+          <Button
+            type="submit"
+            className={`mt-6 ${isDarkMode ?
+              'bg-off-white text-off-black hover:bg-off-white/90' :
+              'bg-off-black text-off-white hover:bg-off-black/90'
+              }`}
+            disabled={isLoading}
+          >
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </form>
