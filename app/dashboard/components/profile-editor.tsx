@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
+import { Switch } from "@/components/ui/switch"
+import { useTheme } from "next-themes"
 
 interface ProfileEditorProps {
   profile: UserProfile
@@ -25,6 +27,8 @@ export default function ProfileEditor({ profile, setProfile }: ProfileEditorProp
   const [isLoading, setIsLoading] = useState(false)
   const { user } = useAuth()
   const { toast } = useToast()
+  const { theme, setTheme } = useTheme()
+  const isDarkMode = theme === "e3-dark"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,6 +71,34 @@ export default function ProfileEditor({ profile, setProfile }: ProfileEditorProp
     }
   }
 
+  const handleThemeChange = async (isDark: boolean) => {
+    // Change theme
+    setTheme(isDark ? "e3-dark" : "e3-light")
+
+    // Optionally save the theme preference to the user's profile
+    if (!user) return
+
+    try {
+      await updateUserProfile(user.uid, {
+        themePreference: isDark ? "e3-dark" : "e3-light"
+      })
+
+      toast({
+        title: "Theme updated",
+        description: `Your profile now uses the ${isDark ? "dark" : "light"} theme.`,
+        duration: 3000,
+      })
+    } catch (error) {
+      console.error("Error updating theme preference:", error)
+      toast({
+        title: "Error",
+        description: "Failed to save theme preference.",
+        variant: "destructive",
+        duration: 3000,
+      })
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -91,7 +123,21 @@ export default function ProfileEditor({ profile, setProfile }: ProfileEditorProp
             <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} />
           </div>
 
-          <Button type="submit" disabled={isLoading}>
+          <div className="space-y-2 pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="theme-toggle">Dark Theme</Label>
+                <p className="text-xs text-muted-foreground">Use dark mode for your public profile</p>
+              </div>
+              <Switch
+                id="theme-toggle"
+                checked={isDarkMode}
+                onCheckedChange={handleThemeChange}
+              />
+            </div>
+          </div>
+
+          <Button type="submit" className="mt-6" disabled={isLoading}>
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </form>
@@ -99,4 +145,3 @@ export default function ProfileEditor({ profile, setProfile }: ProfileEditorProp
     </Card>
   )
 }
-

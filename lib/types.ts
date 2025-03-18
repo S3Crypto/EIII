@@ -6,6 +6,7 @@ export interface UserProfile {
   links: ProfileLink[]
   mediaUrl?: string
   mediaType?: "music" | "video" | "image"
+  themePreference?: "e3-light" | "e3-dark"
 }
 
 export interface ProfileLink {
@@ -14,4 +15,3 @@ export interface ProfileLink {
   url: string
   icon: string
 }
-

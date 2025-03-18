@@ -7,7 +7,6 @@ import { useTheme } from "next-themes"
 import type { UserProfile } from "@/lib/types"
 import E3Logo from "@/components/e3-logo"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { Linkedin, Instagram, MessageCircle, Music, Video, ImageIcon, Link as LinkIcon } from "lucide-react"
 
 interface ClientProfileProps {
@@ -152,54 +151,54 @@ export default function ClientProfile({ username }: ClientProfileProps) {
 
   if (loading) {
     return (
-      <div className={`flex flex-col items-center justify-center min-h-screen p-4 ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
-        <E3Logo size="md" />
-        <div className={`mt-8 animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 ${isDark ? 'border-off-white' : 'border-off-black'}`}></div>
-        <p className="mt-4 text-muted-foreground">Loading profile...</p>
+      <div className={`w-full min-h-screen ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+          <E3Logo size="md" />
+          <div className={`mt-8 animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 ${isDark ? 'border-off-white' : 'border-off-black'}`}></div>
+          <p className="mt-4 text-muted-foreground">Loading profile...</p>
+        </div>
       </div>
     )
   }
 
   if (error || !profile) {
     return (
-      <div className={`flex flex-col items-center justify-center min-h-screen p-4 ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
-        <E3Logo size="md" />
-        <h1 className="mt-8 text-3xl font-bold">Profile Not Found</h1>
-        <p className="mt-4 text-muted-foreground text-center max-w-md">{error || "We couldn't find this profile."}</p>
-        <div className="mt-8 flex gap-4">
-          <Button
-            onClick={handleRetry}
-            className={isDark ? 'bg-off-white text-off-black hover:bg-off-white/90' : 'bg-off-black text-off-white hover:bg-off-black/90'}
-          >
-            Try Again
-          </Button>
-          <Button
-            asChild variant="outline"
-            className={isDark ? 'border-off-white text-off-white hover:bg-off-white/10' : 'border-off-black text-off-black hover:bg-off-black/10'}
-          >
-            <Link href="/">Return Home</Link>
-          </Button>
+      <div className={`w-full min-h-screen ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+          <E3Logo size="md" />
+          <h1 className="mt-8 text-3xl font-bold">Profile Not Found</h1>
+          <p className="mt-4 text-muted-foreground text-center max-w-md">{error || "We couldn't find this profile."}</p>
+          <div className="mt-8 flex gap-4">
+            <Button
+              onClick={handleRetry}
+              className={isDark ? 'bg-off-white text-off-black hover:bg-off-white/90' : 'bg-off-black text-off-white hover:bg-off-black/90'}
+            >
+              Try Again
+            </Button>
+            <Button
+              asChild variant="outline"
+              className={isDark ? 'border-off-white text-off-white hover:bg-off-white/10' : 'border-off-black text-off-black hover:bg-off-black/10'}
+            >
+              <Link href="/">Return Home</Link>
+            </Button>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className={`flex flex-col items-center min-h-screen p-4 max-w-md mx-auto ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
-
-      <div className="w-full flex flex-col items-center space-y-6 py-8">
+    <div className={`w-full min-h-screen ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
+      <div className="flex flex-col items-center py-8 px-4 max-w-md mx-auto">
         {/* Logo */}
         <E3Logo size="md" />
 
         {/* Member Name */}
-        <h1 className="text-xl font-medium text-center">Member : {profile.displayName}</h1>
+        <h1 className="text-xl font-medium text-center mt-6">Member : {profile.displayName}</h1>
 
         {/* Bio */}
         {profile.bio && (
-          <p className="text-center">{profile.bio}</p>
+          <p className="text-center mt-4">{profile.bio}</p>
         )}
 
         {/* Media Content */}
