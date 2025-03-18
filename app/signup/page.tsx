@@ -1,11 +1,11 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/hooks/use-auth"
+import { useTheme } from "next-themes"
 import { createUserProfile } from "@/lib/db"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import E3Logo from "@/components/e3-logo"
 
 export default function SignupPage() {
   const [email, setEmail] = useState("")
@@ -23,6 +24,8 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false)
   const { signUp, user } = useAuth()
   const router = useRouter()
+  const { theme } = useTheme()
+  const isDark = theme === "e3-dark"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,15 +52,13 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
+    <div className={`flex items-center justify-center min-h-screen p-4 ${isDark ? 'bg-off-black text-off-white' : 'bg-off-white text-off-black'}`}>
+      <Card className={`w-full max-w-md ${isDark ? 'bg-off-black border-off-white/20' : 'bg-off-white border-off-black/20'}`}>
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-full border-2 border-black flex items-center justify-center">
-              <span className="text-xl font-bold">E3</span>
-            </div>
+            <E3Logo size="sm" />
           </div>
-          <CardTitle className="text-2xl text-center">Create an account</CardTitle>
+          <CardTitle className={`text-2xl text-center ${isDark ? 'text-off-white' : 'text-off-black'}`}>Create an account</CardTitle>
           <CardDescription className="text-center">Enter your information to create your E3 profile</CardDescription>
         </CardHeader>
         <CardContent>
@@ -69,7 +70,7 @@ export default function SignupPage() {
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className={isDark ? 'text-off-white' : 'text-off-black'}>Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -77,47 +78,60 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className={isDark ? 'border-off-white/30 bg-off-black/50' : 'border-off-black/30 bg-off-white/50'}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className={isDark ? 'text-off-white' : 'text-off-black'}>Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className={isDark ? 'border-off-white/30 bg-off-black/50' : 'border-off-black/30 bg-off-white/50'}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className={isDark ? 'text-off-white' : 'text-off-black'}>Username</Label>
               <Input
                 id="username"
                 placeholder="your_username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                className={isDark ? 'border-off-white/30 bg-off-black/50' : 'border-off-black/30 bg-off-white/50'}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="displayName">Display Name</Label>
+              <Label htmlFor="displayName" className={isDark ? 'text-off-white' : 'text-off-black'}>Display Name</Label>
               <Input
                 id="displayName"
                 placeholder="Your Name"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 required
+                className={isDark ? 'border-off-white/30 bg-off-black/50' : 'border-off-black/30 bg-off-white/50'}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              className={`w-full ${isDark ?
+                'bg-off-white text-off-black hover:bg-off-white/90' :
+                'bg-off-black text-off-white hover:bg-off-black/90'}`}
+              disabled={isLoading}
+            >
               {isLoading ? "Creating account..." : "Sign Up"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
+          <p className={`text-sm ${isDark ? 'text-off-white/70' : 'text-off-black/70'}`}>
             Already have an account?{" "}
-            <Link href="/login" className="text-primary underline-offset-4 hover:underline">
+            <Link
+              href="/login"
+              className={`underline-offset-4 hover:underline ${isDark ? 'text-off-white' : 'text-off-black'}`}
+            >
               Login
             </Link>
           </p>
@@ -126,4 +140,3 @@ export default function SignupPage() {
     </div>
   )
 }
-
