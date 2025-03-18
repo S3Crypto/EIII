@@ -205,10 +205,14 @@ export default function ClientProfile({ username }: ClientProfileProps) {
         {renderMedia()}
 
         {/* Taglines */}
-        <div className="w-full space-y-2 text-center my-8">
-          <p className="text-lg font-medium">STAY CONNECTED</p>
-          <p className="text-lg font-medium">BUILD A COMMUNITY</p>
-          <p className="text-lg font-medium">AN E3WORLD</p>
+        <div className="w-full my-8 relative h-40">
+          <Image
+            src="/profile.gif"
+            alt="STAY CONNECTED, BUILD A COMMUNITY, AN E3WORLD"
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
 
         {/* Join Table Button */}
